@@ -1,20 +1,22 @@
 package let.mingcloud.ratelimit;
 
-import org.redisson.Redisson;
 import org.redisson.api.*;
-import org.redisson.config.Config;
+import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * @author wynn5a
  */
-public class RedissonRateLimiter {
+@Service
+public class RedissonRateLimiterService {
+  private final RedissonClient redisson;
 
+  public RedissonRateLimiterService(RedissonClient redissonClient) {
+    this.redisson = redissonClient;
+  }
 
-  public static void main(String[] args) throws InterruptedException {
-    RedissonClient redisson = Redisson.create();
+  public void test() throws InterruptedException {
     RRateLimiter limiter = redisson.getRateLimiter("myLimiter");
     // 2 permit per 1 seconds
     limiter.setRate(RateType.OVERALL, 2, 1, RateIntervalUnit.SECONDS);
@@ -26,9 +28,17 @@ public class RedissonRateLimiter {
     printAllKeys(redisson);
     test(limiter);
 
+    // 100 permit per 1 seconds
+    limiter.setRate(RateType.OVERALL, 100, 1, RateIntervalUnit.SECONDS);
+    printAllKeys(redisson);
+    test(limiter);
+
+    limiter.setRate(RateType.OVERALL, 200, 1, RateIntervalUnit.SECONDS);
+    printAllKeys(redisson);
+    test(limiter);
+
     //after all
     printAllKeys(redisson);
-    redisson.shutdown();
   }
 
   private static void printAllKeys(RedissonClient redisson) {
