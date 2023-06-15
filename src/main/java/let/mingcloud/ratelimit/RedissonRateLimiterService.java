@@ -18,21 +18,22 @@ public class RedissonRateLimiterService {
 
   public void test() throws InterruptedException {
     RRateLimiter limiter = redisson.getRateLimiter("myLimiter");
-    // 2 permit per 1 seconds
+    System.out.println("\nTest -- 2 permit per 1 seconds");
     limiter.setRate(RateType.OVERALL, 2, 1, RateIntervalUnit.SECONDS);
     printAllKeys(redisson);
     test(limiter);
 
-    // 5 permit per 1 seconds
+    System.out.println("\nTest -- 5 permit per 1 seconds");
     limiter.setRate(RateType.OVERALL, 5, 1, RateIntervalUnit.SECONDS);
     printAllKeys(redisson);
     test(limiter);
 
-    // 100 permit per 1 seconds
+    System.out.println("\nTest -- 100 permit per 1 seconds");
     limiter.setRate(RateType.OVERALL, 100, 1, RateIntervalUnit.SECONDS);
     printAllKeys(redisson);
     test(limiter);
 
+    System.out.println("\nTest -- 200 permit per 1 seconds");
     limiter.setRate(RateType.OVERALL, 200, 1, RateIntervalUnit.SECONDS);
     printAllKeys(redisson);
     test(limiter);
